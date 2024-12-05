@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:employ_service/routes/home_page.dart';
 import 'package:employ_service/routes/login_page.dart';
-import 'package:employ_service/routes/quarter_service_page.dart';
-import 'package:employ_service/routes/quarter_service_complaint_page.dart';
+import 'package:employ_service/routes/quarter_service_complaint_list_page.dart';
+import 'package:employ_service/routes/quarter_service_complaint_form_page.dart';
 
 // Logout function
 Future<void> logout(BuildContext context) async {
@@ -12,7 +13,7 @@ Future<void> logout(BuildContext context) async {
   Navigator.pushReplacement(
     context,
     MaterialPageRoute(
-      builder: (context) => const LoginPage(),
+      builder: (context) => LoginPage(),
     ),
   );
 }
@@ -31,49 +32,48 @@ class SideMenu extends StatelessWidget {
         padding: EdgeInsets.zero,
         children: [
           const DrawerHeader(
-            child: Text('Hi, Employee'),
+            child: AutoSizeText('Hi, Employee'),
           ),
           ListTile(
-            title: const Text('Home'),
+            title: const AutoSizeText('Home'),
             leading: Icon(Icons.home_outlined),
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const HomePage()),
+                MaterialPageRoute(builder: (context) => HomePage()),
               );
             },
           ),
           ExpansionTile(
-            title: const Text('Quarter Service'),
+            title: const AutoSizeText('Quarter Service'),
             leading: Icon(Icons.build_outlined),
             children: <Widget>[
               ListTile(
-                title: const Text('Service Complains'),
+                title: const AutoSizeText('Service Complains'),
                 leading: Icon(Icons.build_outlined),
                 onTap: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const QuarterServicePage()),
+                        builder: (context) => QuarterServiceComplaintList()),
                   );
                 },
               ),
               ListTile(
-                title: const Text('Book Service Complains'),
+                title: const AutoSizeText('Book Service Complains'),
                 leading: Icon(Icons.build_outlined),
                 onTap: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) =>
-                            const QuarterServiceComplaintPage()),
+                        builder: (context) => QuarterServiceComplaintForm()),
                   );
                 },
               ),
             ],
           ),
           ListTile(
-            title: const Text('Logout'),
+            title: const AutoSizeText('Logout'),
             leading: Icon(Icons.logout_outlined),
             onTap: () {
               logout(context);

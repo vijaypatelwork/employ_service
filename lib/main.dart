@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(useMaterial3: true),
       title: 'Employee Service',
       home: Scaffold(
-        body: isLoggedIn ? const HomePage() : const LoginPage(),
+        body: isLoggedIn ? HomePage() : LoginPage(),
       ),
     );
   }
