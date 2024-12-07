@@ -4,7 +4,6 @@ class AppTheme {
   static ThemeData lightTheme = ThemeData(
     brightness: Brightness.light,
     primaryColor: Color(0xFF664FA3),
-    scaffoldBackgroundColor: Color(0xFFE6DCF6),
 
     // Define text theme
     textTheme: const TextTheme(
@@ -31,13 +30,12 @@ class AppTheme {
 
     // AppBar theme
     appBarTheme: const AppBarTheme(
-      backgroundColor: Color(0xFFE6DCF6),
+      backgroundColor: Color(0xFFE4DAF4),
       foregroundColor: Color(0xFF664FA3),
     ),
 
     // Global Drawer Theme
     drawerTheme: DrawerThemeData(
-      backgroundColor: Color(0xFFE6DCF6),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.horizontal(right: Radius.circular(9.0)),
       ),
@@ -47,20 +45,14 @@ class AppTheme {
     listTileTheme: ListTileThemeData(
       textColor: Color(0xFF664FA3),
       iconColor: Color(0xFF664FA3),
-      tileColor: Color(0xFFE6DCF6),
       selectedColor: Color(0xFF664FA3),
-      selectedTileColor: Color(0xFFF5F0F8)
-          .withOpacity(0.1),
     ),
 
     expansionTileTheme: ExpansionTileThemeData(
       textColor: Color(0xFF664FA3),
       collapsedTextColor: Color(0xFF664FA3),
-      backgroundColor: Color(0xFFE6DCF6),
       iconColor: Color(0xFF664FA3),
       collapsedIconColor: Color(0xFF664FA3),
-      tilePadding: EdgeInsets.symmetric(horizontal: 16),
-      expandedAlignment: Alignment.centerLeft,
     ),
 
     inputDecorationTheme: InputDecorationTheme(
