@@ -6,6 +6,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:employ_service/api/api_list.dart';
 import 'package:employ_service/routes/components/side_menu.dart';
 import 'package:employ_service/routes/quarter_service_complaint_list_page.dart';
+import 'package:employ_service/theme/app_theme.dart';
 
 class QuarterServiceComplaintForm extends StatefulWidget {
   @override
@@ -15,6 +16,7 @@ class QuarterServiceComplaintForm extends StatefulWidget {
 
 class QuarterServiceComplaintFormState
     extends State<QuarterServiceComplaintForm> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final _formKey = GlobalKey<FormState>();
   String? selectedQuarter;
   List<DropdownMenuItem<String>> QuarterList = [];
@@ -23,6 +25,9 @@ class QuarterServiceComplaintFormState
   String? selectedSubCategory;
   List<DropdownMenuItem<String>> SubCategoryList = [];
   final complaint_details_controller = TextEditingController();
+  String empname = '';
+  String empdesig = '';
+  String company = '';
 
   @override
   void initState() {
@@ -30,13 +35,17 @@ class QuarterServiceComplaintFormState
     fetchEmployeeQuarterDropdownData();
     fetchEmployeeCategoryDropdownData();
     fetchEmployeeSubcategoryDropdownData();
+    getPrefrenceName();
   }
 
   // get Prefrence Name
-  Future<String> getPrefrenceName(String prefrenceName) async {
+  Future<void> getPrefrenceName() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    String prefrenceValue = prefs.getString(prefrenceName) ?? '';
-    return prefrenceValue;
+    setState(() {
+      empname = prefs.getString('empname') ?? '';
+      empdesig = prefs.getString('empdesig') ?? '';
+      company = prefs.getString('company') ?? '';
+    });
   }
 
   // get Employee Quarter Sub Category API Data
@@ -124,11 +133,19 @@ class QuarterServiceComplaintFormState
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(useMaterial3: true),
-      title: 'Quarter Service Complaint',
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      themeMode: ThemeMode.light,
+      title: 'Employee Service',
       home: Scaffold(
+        key: _scaffoldKey,
         appBar: AppBar(
-          title: AutoSizeText('Quarter Service Complaint'),
+          leading: IconButton(
+            icon: Icon(Icons.apps),
+            onPressed: () {
+              _scaffoldKey.currentState!.openDrawer();
+            },
+          ),
         ),
         drawer: const SideMenu(),
         body: Form(
@@ -144,42 +161,21 @@ class QuarterServiceComplaintFormState
                 children: <Widget>[
                   Column(
                     children: <Widget>[
-                      const SizedBox(height: 60.0),
-                      const AutoSizeText(
+                      AutoSizeText(
                         "Book Service Complaint",
                         style: TextStyle(
                           fontSize: 30,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const SizedBox(
-                        height: 20,
-                      ),
-                      AutoSizeText(
-                        "Select category and SubCategory of service complaint",
-                        style: TextStyle(fontSize: 15, color: Colors.grey[700]),
-                      )
+                      const SizedBox(height: 30),
+                      AutoSizeText(empname),
+                      AutoSizeText(empdesig),
+                      AutoSizeText(company),
                     ],
                   ),
                   Column(
                     children: <Widget>[
-                      FutureBuilder(
-                        future: getPrefrenceName('empname'),
-                        builder: (context, snapshot) {
-                          return AutoSizeText('Employee name : '+'${snapshot.data}');
-                        },
-                      ),
-                      FutureBuilder(
-                        future: getPrefrenceName('empdesig'),
-                        builder: (context, snapshot) {
-                          return AutoSizeText('Employee Designation : '+'${snapshot.data}');},
-                      ),
-                      FutureBuilder(
-                        future: getPrefrenceName('company'),
-                        builder: (context, snapshot) {
-                          return AutoSizeText('Employee Company : '+'${snapshot.data}');},
-                      ),
-                      const SizedBox(height: 30),
                       DropdownButtonFormField<String>(
                         value: selectedQuarter,
                         onChanged: (newValue) {
@@ -196,12 +192,7 @@ class QuarterServiceComplaintFormState
                         items: QuarterList,
                         decoration: InputDecoration(
                           hintText: "Select Your Quarter No",
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(18),
-                              borderSide: BorderSide.none),
-                          fillColor: Colors.purple.withOpacity(0.1),
-                          filled: true,
-                          prefixIcon: const Icon(Icons.build_outlined),
+                          prefixIcon: Icon(Icons.build_outlined),
                         ),
                       ),
                       const SizedBox(height: 30),
@@ -224,11 +215,6 @@ class QuarterServiceComplaintFormState
                         items: CategoryList,
                         decoration: InputDecoration(
                           hintText: "Select Complaint Category",
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(18),
-                              borderSide: BorderSide.none),
-                          fillColor: Colors.purple.withOpacity(0.1),
-                          filled: true,
                           prefixIcon: const Icon(Icons.build_outlined),
                         ),
                       ),
@@ -249,11 +235,6 @@ class QuarterServiceComplaintFormState
                         items: SubCategoryList,
                         decoration: InputDecoration(
                           hintText: "Select Complaint Sub Category",
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(18),
-                              borderSide: BorderSide.none),
-                          fillColor: Colors.purple.withOpacity(0.1),
-                          filled: true,
                           prefixIcon: const Icon(Icons.build_outlined),
                         ),
                       ),
@@ -271,11 +252,6 @@ class QuarterServiceComplaintFormState
                         keyboardType: TextInputType.multiline,
                         decoration: InputDecoration(
                           hintText: "Describe Your Complaint",
-                          border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(18),
-                              borderSide: BorderSide.none),
-                          fillColor: Colors.purple.withOpacity(0.1),
-                          filled: true,
                           prefixIcon: const Icon(Icons.build_outlined),
                         ),
                       )
@@ -291,17 +267,8 @@ class QuarterServiceComplaintFormState
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(25),
                               border: Border.all(
-                                color: Colors.purple,
+                                color: Color(0xFF664FA3),
                               ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.white.withOpacity(0.5),
-                                  spreadRadius: 1,
-                                  blurRadius: 1,
-                                  offset: const Offset(
-                                      0, 1), // changes position of shadow
-                                ),
-                              ],
                             ),
                             child: TextButton(
                               //Start validation
@@ -342,7 +309,7 @@ class QuarterServiceComplaintFormState
                                     "Submit",
                                     style: TextStyle(
                                       fontSize: 16,
-                                      color: Colors.purple,
+                                      color: Color(0xFF664FA3),
                                     ),
                                   ),
                                 ],

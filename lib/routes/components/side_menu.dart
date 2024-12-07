@@ -5,6 +5,7 @@ import 'package:employ_service/routes/home_page.dart';
 import 'package:employ_service/routes/login_page.dart';
 import 'package:employ_service/routes/quarter_service_complaint_list_page.dart';
 import 'package:employ_service/routes/quarter_service_complaint_form_page.dart';
+import 'package:employ_service/routes/profile_page.dart';
 
 // Logout function
 Future<void> logout(BuildContext context) async {
@@ -35,7 +36,7 @@ class SideMenu extends StatelessWidget {
             child: AutoSizeText('Hi, Employee'),
           ),
           ListTile(
-            title: const AutoSizeText('Home'),
+            title: AutoSizeText('Home'),
             leading: Icon(Icons.home_outlined),
             onTap: () {
               Navigator.push(
@@ -45,11 +46,11 @@ class SideMenu extends StatelessWidget {
             },
           ),
           ExpansionTile(
-            title: const AutoSizeText('Quarter Service'),
+            title: const AutoSizeText('Quarter'),
             leading: Icon(Icons.build_outlined),
             children: <Widget>[
               ListTile(
-                title: const AutoSizeText('Service Complains'),
+                title: const AutoSizeText('Complains'),
                 leading: Icon(Icons.build_outlined),
                 onTap: () {
                   Navigator.push(
@@ -60,7 +61,7 @@ class SideMenu extends StatelessWidget {
                 },
               ),
               ListTile(
-                title: const AutoSizeText('Book Service Complains'),
+                title: const AutoSizeText('Book Complains'),
                 leading: Icon(Icons.build_outlined),
                 onTap: () {
                   Navigator.push(
@@ -71,6 +72,17 @@ class SideMenu extends StatelessWidget {
                 },
               ),
             ],
+          ),
+          ListTile(
+            title: const AutoSizeText('Profile'),
+            leading: Icon(Icons.person_2_outlined),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => ProfilePage()),
+              );
+            },
           ),
           ListTile(
             title: const AutoSizeText('Logout'),

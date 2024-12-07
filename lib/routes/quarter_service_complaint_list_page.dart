@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:employ_service/api/api_list.dart';
 import 'package:employ_service/routes/components/side_menu.dart';
+import 'package:employ_service/theme/app_theme.dart';
 
 class QuarterServiceComplaintList extends StatefulWidget {
   @override
@@ -14,6 +15,7 @@ class QuarterServiceComplaintList extends StatefulWidget {
 
 class QuarterServiceComplaintListState
     extends State<QuarterServiceComplaintList> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   @override
   void initState() {
     super.initState();
@@ -43,11 +45,19 @@ class QuarterServiceComplaintListState
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(useMaterial3: true),
-      title: 'Quarter Service Complaint',
+      theme: AppTheme.lightTheme,
+      darkTheme: AppTheme.darkTheme,
+      themeMode: ThemeMode.light,
+      title: 'Employee Service',
       home: Scaffold(
+        key: _scaffoldKey,
         appBar: AppBar(
-          title: Text('Quarter Service Complaint'),
+          leading: IconButton(
+            icon: Icon(Icons.apps),
+            onPressed: () {
+              _scaffoldKey.currentState!.openDrawer();
+            },
+          ),
         ),
         drawer: const SideMenu(),
         body: RefreshIndicator(
