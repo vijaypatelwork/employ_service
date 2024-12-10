@@ -117,72 +117,102 @@ class HomePageState extends State<HomePage> {
 
             // SliverList with a list of items
             SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (BuildContext context, int index) {
-                  return Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                    clipBehavior: Clip.antiAliasWithSaveLayer,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Padding(
-                          padding: const EdgeInsets.all(15),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Image.asset(
-                                'assets/images/logo.png',
-                                height: 150,
-                                width: 150,
-                                fit: BoxFit.fill,
-                              ),
-                              Container(width: 20),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: <Widget>[
-                                    Container(height: 5),
-                                    AutoSizeText(empname,
-                                        style: TextStyle(fontSize: 18)),
-                                    AutoSizeText(empdesig,
-                                        style: TextStyle(fontSize: 15)),
-                                    Container(height: 5),
-                                    Row(children: <Widget>[
-                                      Icon(Icons.corporate_fare_outlined),
-                                      AutoSizeText(company,
-                                          style: TextStyle(fontSize: 15)),
-                                    ]),
-                                    Container(height: 5),
-                                    Row(children: <Widget>[
-                                      Icon(Icons.email_outlined),
-                                      AutoSizeText(email,
-                                          style: TextStyle(fontSize: 15)),
-                                    ]),
-                                    Container(height: 5),
-                                    Row(children: <Widget>[
-                                      Icon(Icons.phone_android_outlined),
-                                      AutoSizeText(phone,
-                                          style: TextStyle(fontSize: 15)),
-                                    ]),
-                                    Container(height: 5),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
+              delegate: SliverChildListDelegate([
+                SizedBox(height: 20),
+                // Folders Section
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Services",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
                         ),
-                      ],
-                    ),
-                  );
-                },
-                childCount: 1,
-              ),
+                      ),
+                      SizedBox(height: 10),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          _buildFolderCard("My Developments", "18.02.2018"),
+                          _buildFolderCard("Dribbles", "21.06.2018"),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(height: 20),
+                // Last Files Section
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Latest Updates",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                        ),
+                      ),
+                      SizedBox(height: 10),
+
+
+                    ],
+                  ),
+                ),
+              ]),
             ),
           ],
+
         ),
       ),
     );
   }
+}
+
+
+Widget _buildFolderCard(String title, String date) {
+  return Container(
+    width: 160,
+    padding: EdgeInsets.all(16),
+    decoration: BoxDecoration(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(15),
+      boxShadow: [
+        BoxShadow(
+          color: Colors.black12,
+          blurRadius: 5,
+          spreadRadius: 2,
+        ),
+      ],
+    ),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(Icons.folder, color: Color(0xFF0074E4), size: 40),
+        SizedBox(height: 10),
+        Text(
+          title,
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+            color: Colors.black87,
+          ),
+        ),
+        SizedBox(height: 5),
+        Text(
+          "Created: $date",
+          style: TextStyle(
+            fontSize: 12,
+            color: Colors.grey,
+          ),
+        ),
+      ],
+    ),
+  );
 }

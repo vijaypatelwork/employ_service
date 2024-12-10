@@ -6,6 +6,7 @@ import 'package:employ_service/routes/login_page.dart';
 import 'package:employ_service/routes/quarter_service_complaint_list_page.dart';
 import 'package:employ_service/routes/quarter_service_complaint_form_page.dart';
 import 'package:employ_service/routes/profile_page.dart';
+import 'package:employ_service/routes/test1_page.dart';
 
 // Logout function
 Future<void> logout(BuildContext context) async {
@@ -83,6 +84,18 @@ class SideMenu extends StatelessWidget {
               );
             },
           ),
+
+          ListTile(
+            title: const AutoSizeText('Test1App'),
+            leading: Icon(Icons.person_2_outlined),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Test1App()),
+              );
+            },
+          ),
+
           ListTile(
             title: const AutoSizeText('Logout'),
             leading: Icon(Icons.logout_outlined),
