@@ -6,6 +6,8 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:employ_service/api/api_list.dart';
 import 'package:employ_service/routes/components/side_menu.dart';
 import 'package:employ_service/theme/app_theme.dart';
+import 'package:employ_service/routes/quarter_service_complaint_form_page.dart';
+import 'package:employ_service/routes/components/custom_sliver_app_bar.dart';
 
 class QuarterServiceComplaintList extends StatefulWidget {
   @override
@@ -15,10 +17,30 @@ class QuarterServiceComplaintList extends StatefulWidget {
 
 class QuarterServiceComplaintListState
     extends State<QuarterServiceComplaintList> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  String empname = '';
+  String empdesig = '';
+  String company = '';
+  String empposition = '';
+  String empdepartment = '';
+  String email = '';
+  String phone = '';
   @override
   void initState() {
     super.initState();
+    getPrefrenceName();
+  }
+
+  Future<void> getPrefrenceName() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      empname = prefs.getString('empname') ?? '';
+      empdesig = prefs.getString('empdesig') ?? '';
+      company = prefs.getString('company') ?? '';
+      empposition = prefs.getString('empposition') ?? '';
+      empdepartment = prefs.getString('empdepartment') ?? '';
+      email = prefs.getString('email') ?? '';
+      phone = prefs.getString('phone') ?? '';
+    });
   }
 
   // get Employee Quarter Sub Category API Data
@@ -50,55 +72,68 @@ class QuarterServiceComplaintListState
       themeMode: ThemeMode.light,
       title: 'Employee Service',
       home: Scaffold(
-        key: _scaffoldKey,
-        appBar: AppBar(
-          leading: IconButton(
-            icon: Icon(Icons.apps),
-            onPressed: () {
-              _scaffoldKey.currentState!.openDrawer();
+        appBar: null,
+        drawer: SideMenu(),
+        body: RefreshIndicator(
+          onRefresh: _refresh,
+          child: FutureBuilder<List<dynamic>>(
+            // Fetch the data using the Future function
+            future: fetchEmployeeQuarterComplaintData(),
+            builder: (context, snapshot) {
+              // Check if the Future is still loading
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: CircularProgressIndicator());
+              }
+              // Handle error if there was a problem fetching data
+              if (snapshot.hasError) {
+                return Center(child: AutoSizeText('Error: ${snapshot.error}'));
+              }
+              List<dynamic> items = snapshot.data!;
+              return CustomScrollView(
+                slivers: [
+                  CustomSliverAppBar(),
+                  SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        // Handle if data is fetched successfully
+                        if (snapshot.hasData) {
+                          final item = items[index];
+                          final itemNo = index + 1;
+                          return Card(
+                            margin: EdgeInsets.symmetric(
+                                vertical: 10, horizontal: 10),
+                            child: ListTile(
+                              title: AutoSizeText(
+                                  '[$itemNo] Your Complaint Details'),
+                              subtitle: AutoSizeText(
+                                  'Quarter No : ${item['quarterNo']}'
+                                  '\nCategory : ${item['categoryName']}'
+                                  '\nSubcategory : ${item['subcategoryName']}'
+                                  '\nStatus : ${item['employee_quarter_complaint_status']}'
+                                  '\nDetails : ${item['employee_quarter_complaint_details']}'),
+                            ),
+                          );
+                        }
+                        return Center(
+                            child: AutoSizeText('No data available.'));
+                      },
+                      childCount: items.length,
+                    ),
+                  ),
+                ],
+              );
             },
           ),
         ),
-        drawer: const SideMenu(),
-        body: RefreshIndicator(
-              onRefresh: _refresh,
-              child: FutureBuilder<List<dynamic>>(
-          // Fetch the data using the Future function
-          future: fetchEmployeeQuarterComplaintData(),
-          builder: (context, snapshot) {
-            // Check if the Future is still loading
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator());
-            }
-            // Handle error if there was a problem fetching data
-            if (snapshot.hasError) {
-              return Center(child: AutoSizeText('Error: ${snapshot.error}'));
-            }
-            // Handle if data is fetched successfully
-            if (snapshot.hasData) {
-              List<dynamic> items = snapshot.data!;
-              return ListView.builder(
-                itemCount: items.length,
-                itemBuilder: (context, index) {
-                  final item = items[index];
-                  final itemNo = index + 1;
-                  return Card(
-                    margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                    child: ListTile(
-                      title: AutoSizeText('[$itemNo] Your Complaint Details'),
-                      subtitle: AutoSizeText('Quarter No : ${item['quarterNo']}'
-                          '\nCategory : ${item['categoryName']}'
-                          '\nSubcategory : ${item['subcategoryName']}'
-                          '\nStatus : ${item['employee_quarter_complaint_status']}'
-                          '\nDetails : ${item['employee_quarter_complaint_details']}'),
-                    ),
-                  );
-                },
-              );
-            }
-            return Center(child: AutoSizeText('No data available.'));
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => QuarterServiceComplaintForm()),
+            );
           },
-        ),
+          child: Icon(Icons.add), // Icon for the button
         ),
       ),
     );

@@ -3,6 +3,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:employ_service/routes/components/side_menu.dart';
 import 'package:employ_service/theme/app_theme.dart';
+import 'package:employ_service/routes/components/custom_sliver_app_bar.dart';
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -10,7 +11,6 @@ class ProfilePage extends StatefulWidget {
 }
 
 class ProfilePageState extends State<ProfilePage> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   String empname = '';
   String empdesig = '';
   String username = '';
@@ -49,31 +49,33 @@ class ProfilePageState extends State<ProfilePage> {
       themeMode: ThemeMode.light,
       title: 'Employee Service',
       home: Scaffold(
-        key: _scaffoldKey,
-        appBar: AppBar(
-          leading: IconButton(
-            icon: Icon(Icons.apps),
-            onPressed: () {
-              _scaffoldKey.currentState!.openDrawer();
-            },
-          ),
-        ),
-        drawer: const SideMenu(),
-        body: Card(
-          elevation: 3,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-          child: Column(
-              mainAxisSize: MainAxisSize.min, // Shrinks to fit content
-              children: [
-                ListTile(
-                  leading: Icon(Icons.person),
-                  title: AutoSizeText(empname),
-                  subtitle: AutoSizeText(empdesig),
+        appBar: null,
+        drawer: SideMenu(),
+        body: CustomScrollView(
+          slivers: [
+            CustomSliverAppBar(),
+            SliverToBoxAdapter(
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 30.0),
+                child: Card(
+                  elevation: 3,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                  child: Column(
+                      mainAxisSize: MainAxisSize.min, // Shrinks to fit content
+                      children: [
+                        ListTile(
+                          leading: Icon(Icons.person),
+                          title: AutoSizeText(empname),
+                          subtitle: AutoSizeText(empdesig),
+                        ),
+                      ]),
                 ),
-              ]),
+              ),
+            ),
+          ],
         ),
       ),
     );

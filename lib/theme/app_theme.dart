@@ -30,8 +30,8 @@ class AppTheme {
 
     // AppBar theme
     appBarTheme: const AppBarTheme(
-      backgroundColor: Color(0xFFE4DAF4),
-      foregroundColor: Color(0xFF664FA3),
+      backgroundColor: Color(0xFF664FA3),
+      foregroundColor: Color(0xFFE4DAF4),
     ),
 
     // Global Drawer Theme

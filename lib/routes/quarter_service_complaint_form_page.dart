@@ -7,6 +7,7 @@ import 'package:employ_service/api/api_list.dart';
 import 'package:employ_service/routes/components/side_menu.dart';
 import 'package:employ_service/routes/quarter_service_complaint_list_page.dart';
 import 'package:employ_service/theme/app_theme.dart';
+import 'package:employ_service/routes/components/custom_sliver_app_bar.dart';
 
 class QuarterServiceComplaintForm extends StatefulWidget {
   @override
@@ -16,7 +17,6 @@ class QuarterServiceComplaintForm extends StatefulWidget {
 
 class QuarterServiceComplaintFormState
     extends State<QuarterServiceComplaintForm> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final _formKey = GlobalKey<FormState>();
   String? selectedQuarter;
   List<DropdownMenuItem<String>> QuarterList = [];
@@ -28,7 +28,10 @@ class QuarterServiceComplaintFormState
   String empname = '';
   String empdesig = '';
   String company = '';
-
+  String empposition = '';
+  String empdepartment = '';
+  String email = '';
+  String phone = '';
   @override
   void initState() {
     super.initState();
@@ -45,6 +48,10 @@ class QuarterServiceComplaintFormState
       empname = prefs.getString('empname') ?? '';
       empdesig = prefs.getString('empdesig') ?? '';
       company = prefs.getString('company') ?? '';
+      empposition = prefs.getString('empposition') ?? '';
+      empdepartment = prefs.getString('empdepartment') ?? '';
+      email = prefs.getString('email') ?? '';
+      phone = prefs.getString('phone') ?? '';
     });
   }
 
@@ -138,190 +145,191 @@ class QuarterServiceComplaintFormState
       themeMode: ThemeMode.light,
       title: 'Employee Service',
       home: Scaffold(
-        key: _scaffoldKey,
-        appBar: AppBar(
-          leading: IconButton(
-            icon: Icon(Icons.apps),
-            onPressed: () {
-              _scaffoldKey.currentState!.openDrawer();
-            },
-          ),
-        ),
-        drawer: const SideMenu(),
-        body: Form(
-          key: _formKey,
-          child: SingleChildScrollView(
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 40),
-              height: MediaQuery.of(context).size.height - 50,
-              width: double.infinity,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: <Widget>[
-                  Column(
+        appBar: null,
+        drawer: SideMenu(),
+        body: CustomScrollView(
+          slivers: [
+            CustomSliverAppBar(),
+            SliverToBoxAdapter(
+              child: Form(
+                key: _formKey,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 30),
+                  width: double.infinity,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: <Widget>[
-                      AutoSizeText(
-                        "Book Service Complaint",
-                        style: TextStyle(
-                          fontSize: 30,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 30),
-                      AutoSizeText(empname),
-                      AutoSizeText(empdesig),
-                      AutoSizeText(company),
-                    ],
-                  ),
-                  Column(
-                    children: <Widget>[
-                      DropdownButtonFormField<String>(
-                        value: selectedQuarter,
-                        onChanged: (newValue) {
-                          setState(() {
-                            selectedQuarter = newValue;
-                          });
-                        },
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please Select Your Quarter No';
-                          }
-                          return null;
-                        },
-                        items: QuarterList,
-                        decoration: InputDecoration(
-                          hintText: "Select Your Quarter No",
-                          prefixIcon: Icon(Icons.build_outlined),
-                        ),
-                      ),
-                      const SizedBox(height: 30),
-                      DropdownButtonFormField<String>(
-                        value: selectedCategory,
-                        onChanged: (newValue) {
-                          setState(() {
-                            selectedCategory = newValue;
-                            selectedSubCategory = null;
-                            SubCategoryList = [];
-                            fetchEmployeeSubcategoryDropdownData();
-                          });
-                        },
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please Select Complaint Category';
-                          }
-                          return null;
-                        },
-                        items: CategoryList,
-                        decoration: InputDecoration(
-                          hintText: "Select Complaint Category",
-                          prefixIcon: const Icon(Icons.build_outlined),
-                        ),
-                      ),
-                      const SizedBox(height: 30),
-                      DropdownButtonFormField<String>(
-                        value: selectedSubCategory,
-                        onChanged: (newValue) {
-                          setState(() {
-                            selectedSubCategory = newValue;
-                          });
-                        },
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please Select Complaint Sub Category';
-                          }
-                          return null;
-                        },
-                        items: SubCategoryList,
-                        decoration: InputDecoration(
-                          hintText: "Select Complaint Sub Category",
-                          prefixIcon: const Icon(Icons.build_outlined),
-                        ),
-                      ),
-                      const SizedBox(height: 30),
-                      TextFormField(
-                        controller: complaint_details_controller,
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please Describe Your Complaint';
-                          }
-                          return null;
-                        },
-                        minLines: 6, // Set this
-                        maxLines: 9, // and this
-                        keyboardType: TextInputType.multiline,
-                        decoration: InputDecoration(
-                          hintText: "Describe Your Complaint",
-                          prefixIcon: const Icon(Icons.build_outlined),
-                        ),
-                      )
-                    ],
-                  ),
-                  Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Column(children: [
-                          Container(
-                            height: 45,
-                            width: 150,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(25),
-                              border: Border.all(
-                                color: Color(0xFF664FA3),
-                              ),
-                            ),
-                            child: TextButton(
-                              //Start validation
-                              onPressed: () async {
-                                if (_formKey.currentState?.validate() ??
-                                    false) {
-                                  _formKey.currentState!.save();
-                                  //Book complaint api Store data
-                                  saveEmployeeQuarterComplaint(
-                                      '$selectedQuarter',
-                                      '$selectedCategory',
-                                      '$selectedSubCategory',
-                                      'pending',
-                                      complaint_details_controller.text.trim());
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                            QuarterServiceComplaintList()),
-                                  );
-                                } else {
-                                  ScaffoldMessenger.of(context)
-                                      .showSnackBar(const SnackBar(
-                                    content: Text("! Invalid Details"),
-                                  ));
-                                }
-                              },
-                              //End validation
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    decoration: const BoxDecoration(
-                                      shape: BoxShape.circle,
-                                    ),
-                                  ),
-                                  const Text(
-                                    "Submit",
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      color: Color(0xFF664FA3),
-                                    ),
-                                  ),
-                                ],
-                              ),
+                      Column(
+                        children: <Widget>[
+                          const SizedBox(height: 30),
+                          AutoSizeText(
+                            "Book Service Complaint",
+                            style: TextStyle(
+                              fontSize: 30,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
-                        ]),
-                      ]),
-                ],
+                          const SizedBox(height: 10),
+                          AutoSizeText(empname),
+                          AutoSizeText(empdesig),
+                          AutoSizeText(company),
+                          const SizedBox(height: 30),
+                        ],
+                      ),
+                      Column(
+                        children: <Widget>[
+                          DropdownButtonFormField<String>(
+                            value: selectedQuarter,
+                            onChanged: (newValue) {
+                              setState(() {
+                                selectedQuarter = newValue;
+                              });
+                            },
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please Select Your Quarter No';
+                              }
+                              return null;
+                            },
+                            items: QuarterList,
+                            decoration: InputDecoration(
+                              hintText: "Select Your Quarter No",
+                              prefixIcon: Icon(Icons.build_outlined),
+                            ),
+                          ),
+                          const SizedBox(height: 30),
+                          DropdownButtonFormField<String>(
+                            value: selectedCategory,
+                            onChanged: (newValue) {
+                              setState(() {
+                                selectedCategory = newValue;
+                                selectedSubCategory = null;
+                                SubCategoryList = [];
+                                fetchEmployeeSubcategoryDropdownData();
+                              });
+                            },
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please Select Complaint Category';
+                              }
+                              return null;
+                            },
+                            items: CategoryList,
+                            decoration: InputDecoration(
+                              hintText: "Select Complaint Category",
+                              prefixIcon: const Icon(Icons.build_outlined),
+                            ),
+                          ),
+                          const SizedBox(height: 30),
+                          DropdownButtonFormField<String>(
+                            value: selectedSubCategory,
+                            onChanged: (newValue) {
+                              setState(() {
+                                selectedSubCategory = newValue;
+                              });
+                            },
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please Select Complaint Sub Category';
+                              }
+                              return null;
+                            },
+                            items: SubCategoryList,
+                            decoration: InputDecoration(
+                              hintText: "Select Complaint Sub Category",
+                              prefixIcon: const Icon(Icons.build_outlined),
+                            ),
+                          ),
+                          const SizedBox(height: 30),
+                          TextFormField(
+                            controller: complaint_details_controller,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please Describe Your Complaint';
+                              }
+                              return null;
+                            },
+                            minLines: 6, // Set this
+                            maxLines: 9, // and this
+                            keyboardType: TextInputType.multiline,
+                            decoration: InputDecoration(
+                              hintText: "Describe Your Complaint",
+                              prefixIcon: const Icon(Icons.build_outlined),
+                            ),
+                          ),
+                          const SizedBox(height: 50),
+                        ],
+                      ),
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Column(children: [
+                              Container(
+                                height: 45,
+                                width: 150,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(25),
+                                  border: Border.all(
+                                    color: Color(0xFF664FA3),
+                                  ),
+                                ),
+                                child: TextButton(
+                                  //Start validation
+                                  onPressed: () async {
+                                    if (_formKey.currentState?.validate() ??
+                                        false) {
+                                      _formKey.currentState!.save();
+                                      //Book complaint api Store data
+                                      saveEmployeeQuarterComplaint(
+                                          '$selectedQuarter',
+                                          '$selectedCategory',
+                                          '$selectedSubCategory',
+                                          'pending',
+                                          complaint_details_controller.text
+                                              .trim());
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                QuarterServiceComplaintList()),
+                                      );
+                                    } else {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(const SnackBar(
+                                        content: Text("! Invalid Details"),
+                                      ));
+                                    }
+                                  },
+                                  //End validation
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        decoration: const BoxDecoration(
+                                          shape: BoxShape.circle,
+                                        ),
+                                      ),
+                                      const Text(
+                                        "Submit",
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          color: Color(0xFF664FA3),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ]),
+                          ]),
+                      const SizedBox(height: 30),
+                    ],
+                  ),
+                ),
               ),
             ),
-          ),
+          ],
         ),
       ),
     );
